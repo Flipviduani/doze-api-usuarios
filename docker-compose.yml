@@ -1,0 +1,38 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: doze-api-usuarios-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: vidu
+      MYSQL_DATABASE: bd_usuarios
+      MYSQL_USER: vidu
+      MYSQL_PASSWORD: vidu
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - doze-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: doze-api-usuarios-phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: vidu
+    ports:
+      - "5052:80"
+    networks:
+      - doze-network
+
+volumes:
+  mysql_data:
+
+networks:
+  doze-network:
+    driver: bridge

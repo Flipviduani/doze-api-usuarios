@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: doze-api-usuarios
+
+server:
+  port: 8082
+
+datasource:
+  host: jdbc:mysql://localhost:3307/bd_usuarios?useSSL=false&serverTimezone=America/Sao_Paulo
+  user: vidu
+  pass: vidu
