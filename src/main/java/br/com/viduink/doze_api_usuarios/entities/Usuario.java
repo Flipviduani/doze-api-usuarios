@@ -12,5 +12,5 @@ public class Usuario {
     private String email;
     private String senha;
     private LocalDateTime dataHoraCadastro;
-    private Integer perfilid;
+    private Integer perfilId;
 }

@@ -5,7 +5,7 @@ create table perfis (
 );
 
 create table usuarios(
-    id          int              auto_increment,
+    id                   int              auto_increment,
     nome                 varchar(100)     not null,
     email                varchar(100)     not null unique,
     senha                varchar(100)     not null,

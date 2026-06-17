@@ -64,4 +64,44 @@ public class PerfilRepository {
             return lista;
         }
     }
+    public Perfil obterPorId(Integer id) throws Exception {
+        try (var connection = connectionFactory.getConnection()) {
+            var statement = connection.prepareStatement("""
+                        select id, nome from perfis
+                        where id = ?
+            """);
+            statement.setInt(1, id);
+            var result = statement.executeQuery();
+
+            Perfil perfil = null;
+
+            if (result.next()) {
+                perfil = new Perfil();
+                perfil.setId(result.getInt("id"));
+                perfil.setNome(result.getString("nome"));
+            }
+
+            return perfil;
+        }
+    }
+
+    public Perfil obterPorNome(String nome) throws Exception {
+        try (var connection = connectionFactory.getConnection()) {
+            var statement = connection.prepareStatement("""
+                        select id, nome from perfis
+                        where nome = ?
+            """);
+            statement.setString(1, nome);
+            var result = statement.executeQuery();
+
+            Perfil perfil = null;
+
+            if (result.next()) {
+                perfil = new Perfil();
+                perfil.setId(result.getInt("id"));
+                perfil.setNome(result.getString("nome"));
+            }
+            return perfil;
+        }
+    }
 }
