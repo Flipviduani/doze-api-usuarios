@@ -30,7 +30,7 @@ public class UsuarioRepository {
     public Usuario obterPorEmail(String email) throws Exception {
         try (var connection = connectionFactory.getConnection()) {
             var statement = connection.prepareStatement("""
-                    select id, nome, senha, perfil_id
+                    select id, nome, email, senha, perfil_id
                     from usuarios
                     where email = ?
                     """);
