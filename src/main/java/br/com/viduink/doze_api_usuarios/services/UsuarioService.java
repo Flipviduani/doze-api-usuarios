@@ -1,9 +1,7 @@
 package br.com.viduink.doze_api_usuarios.services;
 
-import br.com.viduink.doze_api_usuarios.dtos.AutenticarUsuarioRequest;
-import br.com.viduink.doze_api_usuarios.dtos.AutenticarUsuarioResponse;
-import br.com.viduink.doze_api_usuarios.dtos.CriarUsuarioRequest;
-import br.com.viduink.doze_api_usuarios.dtos.CriarUsuarioResponse;
+import br.com.viduink.doze_api_usuarios.components.JwtComponent;
+import br.com.viduink.doze_api_usuarios.dtos.*;
 import br.com.viduink.doze_api_usuarios.entities.Usuario;
 import br.com.viduink.doze_api_usuarios.exceptions.AcessoNegadoException;
 import br.com.viduink.doze_api_usuarios.exceptions.EmailJaCadastradoException;
@@ -26,6 +24,9 @@ public class UsuarioService {
     @Autowired //inicialização automática
     private PerfilRepository perfilRepository;
 
+    @Autowired
+    private JwtComponent jwtComponent;
+
     //Metodo para implementar um fluxo de autenticação de usuário no sistema (login do usuário)
     public AutenticarUsuarioResponse autenticarUsuario(AutenticarUsuarioRequest request) throws Exception {
 
@@ -36,7 +37,7 @@ public class UsuarioService {
         if (usuario != null && usuario.getSenha().equals(criptografarSenha(request.senha()))) {
 
             //Recuperar o perfil do usuário no banco de dados:
-            var perfil = perfilRepository.obterPorId(usuario.getId());
+            var perfil = perfilRepository.obterPorId(usuario.getPerfilId());
 
             //Retornar os dados do usuário autenticado
             return new AutenticarUsuarioResponse(
@@ -45,7 +46,7 @@ public class UsuarioService {
                     usuario.getEmail(),
                     perfil.getNome(),
                     LocalDateTime.now(),
-                    "Seu token jwt será gerado aqui."
+                    jwtComponent.getAccessToken(usuario.getEmail(), perfil.getNome())
             );
         }
 
@@ -89,6 +90,23 @@ public class UsuarioService {
                 usuario.getEmail(),
                 perfil.getNome()
         );
+    }
+
+    //Metodo para retornar os dados do usuário autenticado:
+    public DadosUsuarioResponse obterDadosUsuario(String email) throws Exception {
+        var usuario = usuarioRepository.obterPorEmail(email);
+
+        //Buscar o perfil do usuário no banco de dados:
+        var perfil = perfilRepository.obterPorId(usuario.getPerfilId());
+
+        //Retornar os dados:
+        return new DadosUsuarioResponse(
+                usuario.getId(),
+                usuario.getNome(),
+                usuario.getEmail(),
+                perfil.getNome()
+        );
+
     }
 
 //Metodo para fazer a criptografia da senha do usuário:

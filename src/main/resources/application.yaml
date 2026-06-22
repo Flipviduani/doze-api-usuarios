@@ -9,3 +9,7 @@ datasource:
   host: jdbc:mysql://localhost:3307/bd_usuarios?useSSL=false&serverTimezone=America/Sao_Paulo
   user: vidu
   pass: vidu
+
+jwt:
+  secret: 6be0c776-7b57-422e-98b5-47993f4981ba
+  expiration: 3600000

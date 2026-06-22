@@ -1,5 +1,6 @@
 package br.com.viduink.doze_api_usuarios.controllers;
 
+import br.com.viduink.doze_api_usuarios.components.JwtComponent;
 import br.com.viduink.doze_api_usuarios.dtos.AutenticarUsuarioRequest;
 import br.com.viduink.doze_api_usuarios.dtos.CriarUsuarioRequest;
 import br.com.viduink.doze_api_usuarios.entities.Usuario;
@@ -7,12 +8,10 @@ import br.com.viduink.doze_api_usuarios.exceptions.AcessoNegadoException;
 import br.com.viduink.doze_api_usuarios.exceptions.EmailJaCadastradoException;
 import br.com.viduink.doze_api_usuarios.exceptions.SenhaInvalidaException;
 import br.com.viduink.doze_api_usuarios.services.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
@@ -20,6 +19,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private JwtComponent jwtComponent;
 
     @PostMapping("autenticar")
     public ResponseEntity<?> autenticar(@RequestBody AutenticarUsuarioRequest request) {
@@ -31,6 +33,21 @@ public class UsuarioController {
         } catch (AcessoNegadoException e) {
             //HTTP 401 (UNAUTHORIZED)
             return ResponseEntity.status(401).body(e.getMessage());
+
+        } catch (Exception e) {
+            //HTTP 500 (INTERNAL SERVER ERROR)
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("obter-dados")
+    public ResponseEntity<?> obterDados(HttpServletRequest http) {
+        try {
+            var email = jwtComponent.getEmailUsuario(http);
+
+            var response = usuarioService.obterDadosUsuario(email);
+
+            return ResponseEntity.status(200).body(response); //Provisório
 
         } catch (Exception e) {
             //HTTP 500 (INTERNAL SERVER ERROR)
