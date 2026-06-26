@@ -14,17 +14,24 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - doze-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "vidu", "-pvidu" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: doze-api-usuarios-phpmyadmin
     restart: always
-    depends_on:
-      - mysql
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: vidu
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "5052:80"
     networks:

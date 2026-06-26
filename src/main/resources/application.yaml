@@ -13,3 +13,6 @@ datasource:
 jwt:
   secret: 6be0c776-7b57-422e-98b5-47993f4981ba
   expiration: 3600000
+
+cors:
+  frontend: http://localhost:4200
