@@ -16,3 +16,5 @@ create table usuarios
     primary key (id),
     foreign key (perfil_id) references perfis (id)
 );
+
+insert into perfis(nome) values("Operador");
